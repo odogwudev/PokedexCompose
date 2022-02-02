@@ -6,89 +6,170 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.plcoding.jetpackcomposepokedex"
-        minSdk 21
-        targetSdk 30
+        minSdkVersion 21
+        targetSdkVersion 31
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
+        vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    signingConfigs {
+        // We use a bundled debug keystore, to allow debug builds from CI to be upgradable
+        debug {
+            storeFile rootProject.file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
+    // Tests can be Robolectric or instrumented tests
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = '1.8'
-        useIR = true
-    }
+
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion '1.4.30'
+        kotlinCompilerExtensionVersion '1.1.0-rc02' // For Kotlin 1.6.10. Revert with rc03
+    }
+
+    packagingOptions {
+        excludes += "/META-INF/AL2.0"
+        excludes += "/META-INF/LGPL2.1"
     }
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling:$compose_version"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    implementation 'androidx.activity:activity-compose:1.3.0-alpha06'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
+    implementation 'androidx.activity:activity-compose:1.4.0'
+    // Integration with activities
+    implementation 'androidx.activity:activity-compose:1.4.0'
+    // Compose Material Design
+    implementation 'androidx.compose.material:material:1.0.5'
 
-    implementation "androidx.compose.material:material-icons-core:$compose_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04"
-    implementation "androidx.navigation:navigation-compose:1.0.0-alpha09"
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha05"
+    implementation 'androidx.compose.ui:ui:1.0.5'
+    // Tooling support (Previews, etc.)
+    implementation 'androidx.compose.ui:ui-tooling:1.0.5'
+    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+    implementation 'androidx.compose.foundation:foundation:1.0.5'
+    // Material Design
+    implementation 'androidx.compose.material:material:1.0.5'
+    // Material design icons
+    implementation 'androidx.compose.material:material-icons-core:1.0.5'
+    implementation 'androidx.compose.material:material-icons-extended:1.0.5'
+    // Integration with activities
+    implementation 'androidx.activity:activity-compose:1.4.0'
+    // Integration with ViewModels
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0-alpha01'
+    // Integration with observables
+    implementation 'androidx.compose.runtime:runtime-livedata:1.0.5'
+    implementation 'androidx.compose.runtime:runtime-rxjava2:1.0.5'
+
+    // UI Tests
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.0.5'
+    // Animations
+    implementation 'androidx.compose.animation:animation:1.0.5'
+    // Tooling support (Previews, etc.)
+    implementation 'androidx.compose.ui:ui-tooling:1.0.5'
+    // Integration with ViewModels
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0-alpha01'
+    // UI Tests
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.0.5'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
+    implementation "androidx.navigation:navigation-compose:2.5.0-alpha01"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0"
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation "com.squareup.okhttp3:okhttp:4.9.0"
+    implementation "com.squareup.okhttp3:okhttp:4.9.2"
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"
 
     // Timber
-    implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'com.jakewharton.timber:timber:5.0.1'
 
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
 
     // Coroutine Lifecycle Scopes
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
 
     // Coil
     implementation "io.coil-kt:coil:1.1.1"
     implementation "com.google.accompanist:accompanist-coil:0.7.0"
 
     //Dagger - Hilt
-    implementation "com.google.dagger:hilt-android:2.33-beta"
+    implementation "com.google.dagger:hilt-android:2.35"
     kapt "com.google.dagger:hilt-android-compiler:2.33-beta"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    kapt "androidx.hilt:hilt-compiler:1.0.0-beta01"
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha01'
+    kapt "androidx.hilt:hilt-compiler:1.0.0"
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
-    implementation 'com.android.support:palette-v7:28.0.0'
+    // When using a MDC theme
+    implementation "com.google.android.material:compose-theme-adapter:1.1.3"
+
+    // When using a AppCompat theme
+    implementation "com.google.accompanist:accompanist-appcompat-theme:0.16.0"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        // Treat all Kotlin warnings as errors (disabled by default)
+        allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
+
+        freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+        // Enable experimental coroutines APIs, including Flow
+        freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
+
+        // Set JVM target to 1.8
+        jvmTarget = "1.8"
+    }
+}
+
+tasks.withType(Test) {
+    systemProperty "robolectric.logging", "stdout"
 }
