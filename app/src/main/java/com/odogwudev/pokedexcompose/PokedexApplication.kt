@@ -9,6 +9,6 @@ class PokedexApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Timber.plant(Timber.DebugTree)
+        Timber.plant(Timber.DebugTree())
     }
 }
