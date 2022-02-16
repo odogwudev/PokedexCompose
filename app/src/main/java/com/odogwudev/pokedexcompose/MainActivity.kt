@@ -7,9 +7,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.odogwudev.pokedexcompose.ui.theme.PokedexComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,8 +23,35 @@ class MainActivity : ComponentActivity() {
         setContent {
             PokedexComposeTheme {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "pokedex_list"){
-                    compo
+                NavHost(navController = navController, startDestination = "pokedex_list") {
+                    composable("pokedex_list") {
+
+                    }
+                    composable("pokedex_detail/{dormantColor}/{pokemon_name}",
+                        arguments = listOf(
+                            navArgument("dormantColor") {
+                                type = NavType.IntType
+                            },
+                            navArgument("pokemon_name") {
+                                type = NavType.StringType
+                            }
+                        )
+                    )
+
+                    {
+                        val dormantColor = remember {
+                            val color = it.arguments?.getInt("dormantColor")
+                            color?.let {
+                                Color(it)
+                            } ?: Color.White
+                        }
+                        val pokemon_name = remember{
+                            it.arguments?.getString("pokemon_name")
+                        }
+
+
+                    }
+
                 }
             }
         }
