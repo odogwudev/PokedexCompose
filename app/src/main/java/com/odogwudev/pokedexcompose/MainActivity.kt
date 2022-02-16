@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
             PokedexComposeTheme {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "pokedex_list"){
-
+                    compo
                 }
             }
         }
